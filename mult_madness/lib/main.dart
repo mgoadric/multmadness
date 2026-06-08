@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mult_madness/models/flash.dart';
+import 'package:mult_madness/widgets/flashwidget.dart';
 
 void main() {
   runApp(const MainApp());
@@ -12,7 +14,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
+          child:FlashCardWidget(FlashCard(4, 8)),
         ),
       ),
     );
