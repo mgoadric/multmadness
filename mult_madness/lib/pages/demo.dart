@@ -15,15 +15,19 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+// Animation start from https://github.com/GONZALEZD/flutter_demos/blob/main/flip_animation/lib/main.dart
+
 class _MyHomePageState extends State<MyHomePage> {
-  bool _showFrontSide = true;
+  bool _showAnswer = false;
   bool _flipXAxis = true;
+  final FlashCardDeck _deck = FlashCardDeck([2, 3, 6, 12]);
 
   @override
   void initState() {
     super.initState();
-    _showFrontSide = true;
+    _showAnswer = false;
     _flipXAxis = true;
+    _deck.shuffle();
     //const oneSec = Duration(seconds:2);
     //Timer.periodic(oneSec, (Timer t) => _switchCard());
   }
@@ -57,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _switchCard() {
     setState(() {
-      _showFrontSide = !_showFrontSide;
+      _showAnswer = !_showAnswer;
     });
   }
 
@@ -70,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
         layoutBuilder: (widget, list) => Stack(children: [widget!, ...list]),
         switchInCurve: Curves.easeInBack,
         switchOutCurve: Curves.easeInBack.flipped,
-        child: _showFrontSide ? _buildFront() : _buildRear(),
+        child: _showAnswer ? _buildRear() : _buildFront(),
       ),
     );
   }
@@ -81,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
       animation: rotateAnim,
       child: widget,
       builder: (context, widget) {
-        final isUnder = (ValueKey(_showFrontSide) != widget!.key);
+        final isUnder = (ValueKey(_showAnswer) != widget!.key);
         var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
         tilt *= isUnder ? -1.0 : 1.0;
         final value = isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
@@ -98,15 +102,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildFront() {
     return __buildLayout(
-      key: ValueKey(true),
-      child: FlashCardWidget(card: FlashCard(12, 12), flipped: false),
+      key: ValueKey(false),
+      child: FlashCardWidget(card: _deck.cards[0], answer: false),
     );
   }
 
   Widget _buildRear() {
     return __buildLayout(
-      key: ValueKey(false),
-      child: FlashCardWidget(card: FlashCard(12, 12), flipped: true)
+      key: ValueKey(true),
+      child: FlashCardWidget(card: _deck.cards[0], answer: true)
     );
   }
 

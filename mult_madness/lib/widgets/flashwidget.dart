@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mult_madness/models/flash.dart';
 
 class FlashCardWidget extends StatelessWidget {
-  const FlashCardWidget({super.key, required this.card, required this.flipped});
+  const FlashCardWidget({super.key, required this.card, required this.answer});
   final FlashCard card;
-  final bool flipped;
+  final bool answer;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class FlashCardWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,          
           children: [Text("${card.a} x ${card.b}", style: TextStyle(fontSize: 50.0)),
-          Text(flipped ? "?" : "${card.answer()}", style: TextStyle(fontSize: 70.0))],
+          Text(answer ? "${card.answer()}" : "?", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 70.0))],
         ),
       ),);
   }

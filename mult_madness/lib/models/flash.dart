@@ -9,7 +9,7 @@ class FlashCard {
 }
 
 class FlashCardDeck {
-  List<FlashCard> cards = List.empty();
+  List<FlashCard> cards = [];
 
   FlashCardDeck(List<int> values) {
     for (int v in values) {

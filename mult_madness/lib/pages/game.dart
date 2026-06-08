@@ -13,7 +13,7 @@ class _GameState extends State<Game> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child:FlashCardWidget(card: FlashCard(4, 8), flipped: false),
+      child:FlashCardWidget(card: FlashCard(4, 8), answer: false),
     );
   }
 }
