@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:mult_madness/models/flash.dart';
 
 class FlashCardWidget extends StatelessWidget {
-  const FlashCardWidget({super.key, required this.card, required this.answer});
+  const FlashCardWidget({super.key, required this.card, required this.answer, required this.color});
   final FlashCard card;
   final bool answer;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
-      height: 325, 
+      height: 200, 
       child: Card(
+        color: color,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,          

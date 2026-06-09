@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mult_madness/pages/demo.dart';
 import 'package:mult_madness/pages/game.dart';
 
 void main() {
