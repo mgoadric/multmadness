@@ -37,9 +37,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body:
+      Column(children: [Padding(
+            padding: const .symmetric(horizontal: 16, vertical: 20),
+            child: LinearProgressIndicator(minHeight: 30, value: (_deck.cards.length) / 132),
+          ),
       _deck.cards.isNotEmpty ? 
         Challenge(card: _deck.cards[0], nextCallback: _nextCard,) : Placeholder(),
-          
+          ],)
     );
   }
 

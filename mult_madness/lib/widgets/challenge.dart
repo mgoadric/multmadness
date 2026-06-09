@@ -40,53 +40,49 @@ class _ChallengeState extends State<Challenge> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-Padding(
-            padding: const .symmetric(horizontal: 16, vertical: 20),
-            child: LinearProgressIndicator(
-              minHeight: 30,
-              value: count / 132,
-            ),
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          
+          Expanded(child: SizedBox.expand()),
+          Center(child: _buildFlipAnimation()),
+          Expanded(child: SizedBox.expand()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Answer(
+                callback: _showOptions ? _switchCard : null,
+                number: answers[0],
+              ),
+              SizedBox(width: 20),
+              Answer(
+                callback: _showOptions ? _switchCard : null,
+                number: answers[1],
+              ),
+            ],
           ),
-        Expanded(child: SizedBox.expand()),
-        Center(child: _buildFlipAnimation()),
-        Expanded(child: SizedBox.expand()),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Answer(
-              callback: _showOptions ? _switchCard : null,
-              number: answers[0],
-            ),
-            SizedBox(width: 20),
-            Answer(
-              callback: _showOptions ? _switchCard : null,
-              number: answers[1],
-            ),
-          ],
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Answer(
-              callback: _showOptions ? _switchCard : null,
-              number: answers[2],
-            ),
-            SizedBox(width: 20),
-            Answer(
-              callback: _showOptions ? _switchCard : null,
-              number: answers[3],
-            ),
-          ],
-        ),
-        SizedBox(height: 20),
-      ],
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Answer(
+                callback: _showOptions ? _switchCard : null,
+                number: answers[2],
+              ),
+              SizedBox(width: 20),
+              Answer(
+                callback: _showOptions ? _switchCard : null,
+                number: answers[3],
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
     );
   }
 
@@ -134,12 +130,12 @@ Padding(
   void _resetAnswers() {
     answers = getAnswers();
 
-            Timer(
-              Duration(milliseconds: 300),
-              () => setState(() {
-                _showOptions = true;
-              }),
-            );
+    Timer(
+      Duration(milliseconds: 300),
+      () => setState(() {
+        _showOptions = true;
+      }),
+    );
   }
 
   Widget _buildFlipAnimation() {
@@ -157,10 +153,7 @@ Padding(
     final rotateAnim = Tween(begin: pi, end: 0.0).animate(animation);
     rotateAnim.addStatusListener(
       ((status) => {
-        if (status.isCompleted && !_showAnswer)
-          {
-            _resetAnswers()
-          },
+        if (status.isCompleted && !_showAnswer) {_resetAnswers()},
       }),
     );
     return AnimatedBuilder(
