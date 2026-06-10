@@ -120,7 +120,7 @@ class _ChallengeState extends State<Challenge> {
       }
     });
     timer?.cancel();
-    timer2 = Timer(Duration(seconds: 3), () => _resetCard());
+    timer2 = Timer(Duration(seconds: correct == CardStatus.right ? 2 : 3), () => _resetCard());
   }
 
   void _resetCard() {

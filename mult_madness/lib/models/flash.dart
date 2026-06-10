@@ -18,7 +18,7 @@ class FlashCardDeck {
 
   FlashCardDeck(List<int> values) {
     for (int v in values) {
-      for (var i = 1; i <= 4; i++) {
+      for (var i = 1; i <= 12; i++) {
         cards.add(FlashCard(v, i));
       }
     }
@@ -30,11 +30,19 @@ class FlashCardDeck {
     if (levels.isNotEmpty) {
       if (wrong.isNotEmpty) {
         wrong.shuffle();
-        levels.add(wrong);
+        if (levels[levels.length - 1].isEmpty) {
+          levels.removeLast();
+        }
+        levels.add(List.from(wrong));
+        wrong.clear();
       } else {
-        levels[levels.length - 2].addAll(levels[levels.length - 1]);
+        if (levels.length > 1) {
+          levels[levels.length - 2].addAll(levels[levels.length - 1]);
+        }
         levels.removeLast();
-        levels[levels.length - 1].shuffle();
+        if (levels.isNotEmpty) {
+          levels[levels.length - 1].shuffle();
+        }
       }
     }
   }

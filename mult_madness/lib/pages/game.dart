@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mult_madness/models/flash.dart';
 import 'package:mult_madness/widgets/challenge.dart';
+import 'package:mult_madness/widgets/progress.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -15,9 +16,7 @@ class MyHomePage extends StatefulWidget {
 // Animation start from https://github.com/GONZALEZD/flutter_demos/blob/main/flip_animation/lib/main.dart
 
 class _MyHomePageState extends State<MyHomePage> {
-  final FlashCardDeck _deck = FlashCardDeck([
-    2,
-  ]);
+  final FlashCardDeck _deck = FlashCardDeck([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 
   FlashCard? current;
   bool playing = false;
@@ -26,13 +25,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _deck.shuffle();
-    _deck.startRound();
-    current = _deck.next();
-    playing = true;
+    gotime();
   }
 
   @override
   Widget build(BuildContext context) {
+    var progress = _deck.levels.map<LevelProgress>((item) {
+      return LevelProgress(value: item.length / _deck.total(), color: Colors.blue);
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -46,19 +47,31 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const .symmetric(horizontal: 16, vertical: 20),
-            child: LinearProgressIndicator(
-              minHeight: 30,
-              value: _deck.topTotal() / _deck.total(),
-            ),
-          ),
+          ...progress,
+          _deck.wrong.isNotEmpty
+              ? LevelProgress(
+                  value: _deck.wrong.length / _deck.total(),
+                  color: Colors.red,
+                )
+              : SizedBox(height: 0),
           playing
-              ? Challenge(card: current!, nextCallback: _nextCard, answerCallback: answer)
-              : Placeholder(),
+              ? Challenge(
+                  card: current!,
+                  nextCallback: _nextCard,
+                  answerCallback: answer,
+                )
+              : Expanded(child: Center(child: ElevatedButton(onPressed: gotime, child: Text("Ready?", style: TextStyle(fontSize: 30.0))))),
         ],
       ),
     );
+  }
+
+  void gotime() {
+    setState(() {
+      _deck.startRound();
+      current = _deck.next();
+      playing = true;
+    });
   }
 
   void answer(bool right, FlashCard card) {
@@ -69,7 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
         _deck.incorrect(card);
       }
     });
-    print("${_deck.topTotal()} + ${_deck.current.length} + ${_deck.wrong.length} = ${_deck.total()}");
+    print(
+      "${_deck.topTotal()} + ${_deck.current.length} + ${_deck.wrong.length} = ${_deck.total()}",
+    );
   }
 
   bool _nextCard() {
@@ -80,9 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
       return true;
     } else {
       playing = false;
+      _deck.advance();
       return false;
     }
   }
-
-
 }
