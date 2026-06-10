@@ -15,12 +15,20 @@ class MyHomePage extends StatefulWidget {
 // Animation start from https://github.com/GONZALEZD/flutter_demos/blob/main/flip_animation/lib/main.dart
 
 class _MyHomePageState extends State<MyHomePage> {
-  final FlashCardDeck _deck = FlashCardDeck([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+  final FlashCardDeck _deck = FlashCardDeck([
+    2,
+  ]);
+
+  FlashCard? current;
+  bool playing = false;
 
   @override
   void initState() {
     super.initState();
     _deck.shuffle();
+    _deck.startRound();
+    current = _deck.next();
+    playing = true;
   }
 
   @override
@@ -36,26 +44,45 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body:
-      Column(children: [Padding(
+      body: Column(
+        children: [
+          Padding(
             padding: const .symmetric(horizontal: 16, vertical: 20),
-            child: LinearProgressIndicator(minHeight: 30, value: (_deck.cards.length) / 132),
+            child: LinearProgressIndicator(
+              minHeight: 30,
+              value: _deck.topTotal() / _deck.total(),
+            ),
           ),
-      _deck.cards.isNotEmpty ? 
-        Challenge(card: _deck.cards[0], nextCallback: _nextCard,) : Placeholder(),
-          ],)
+          playing
+              ? Challenge(card: current!, nextCallback: _nextCard, answerCallback: answer)
+              : Placeholder(),
+        ],
+      ),
     );
   }
 
-  bool _nextCard() {
-    if (_deck.cards.isNotEmpty) {
-      setState(() {
-        _deck.cards.removeAt(0);
-      });
-      if (_deck.cards.isNotEmpty) {
-        return true;
+  void answer(bool right, FlashCard card) {
+    setState(() {
+      if (right) {
+        _deck.correct(card);
+      } else {
+        _deck.incorrect(card);
       }
-    }
-    return false;
+    });
+    print("${_deck.topTotal()} + ${_deck.current.length} + ${_deck.wrong.length} = ${_deck.total()}");
   }
+
+  bool _nextCard() {
+    if (_deck.hasNext()) {
+      setState(() {
+        current = _deck.next();
+      });
+      return true;
+    } else {
+      playing = false;
+      return false;
+    }
+  }
+
+
 }

@@ -8,10 +8,11 @@ import 'package:mult_madness/widgets/answer.dart';
 import 'package:mult_madness/widgets/flashwidget.dart';
 
 class Challenge extends StatefulWidget {
-  const Challenge({super.key, required this.card, required this.nextCallback});
+  const Challenge({super.key, required this.card, required this.nextCallback, required this.answerCallback});
 
   final FlashCard card;
   final bool Function() nextCallback;
+  final void Function(bool, FlashCard) answerCallback;
 
   @override
   State<Challenge> createState() => _ChallengeState();
@@ -22,11 +23,15 @@ class Challenge extends StatefulWidget {
 class _ChallengeState extends State<Challenge> {
   bool _showAnswer = false;
   bool _showOptions = true;
-  bool correct = false;
-  int count = 0;
+  CardStatus correct = CardStatus.ready;
   List answers = [];
   Timer? timer;
   Timer? timer2;
+  Map<CardStatus, Color> cardColor = {
+    CardStatus.ready:Colors.amber,
+    CardStatus.right:Colors.green,
+    CardStatus.wrong:Colors.red,
+  };
 
   @override
   void initState() {
@@ -109,8 +114,9 @@ class _ChallengeState extends State<Challenge> {
       _showAnswer = true;
       _showOptions = false;
       if (ans == widget.card.answer()) {
-        correct = true;
-        count++;
+        correct = CardStatus.right;
+      } else {
+        correct = CardStatus.wrong;
       }
     });
     timer?.cancel();
@@ -119,9 +125,11 @@ class _ChallengeState extends State<Challenge> {
 
   void _resetCard() {
     timer2?.cancel();
+    widget.answerCallback(correct == CardStatus.right, widget.card);
     if (widget.nextCallback()) {
       setState(() {
         _showAnswer = false;
+        correct = CardStatus.ready;
       });
       timer = Timer(Duration(seconds: 5), () => _switchCard(0));
     }
@@ -189,7 +197,7 @@ class _ChallengeState extends State<Challenge> {
       child: FlashCardWidget(
         card: widget.card,
         answer: answer,
-        color: const Color.fromARGB(255, 179, 207, 219),
+        color: cardColor[correct]!,
       ),
     );
   }
